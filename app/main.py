@@ -8,10 +8,15 @@ app = FastAPI(title="News Evaluator API")
 @app.get("/evaluate", response_model=EvaluationResponse)
 def evaluate(url: str):
     try:
-        text = extract_article(url)
-        label, reasoning = classify(text)
+        art_info = extract_article(url)
+        label, reasoning = classify(art_info["text"])
 
         return EvaluationResponse(
+            url=url,
+            publisher=art_info["publisher"],
+            title=art_info["title"],
+            date=art_info["date"],
+            paywall=art_info["paywall"],
             label=label,
             reasoning=reasoning
         )
