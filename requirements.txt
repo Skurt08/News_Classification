@@ -4,3 +4,6 @@ newspaper3k
 pydantic
 requests
 lxml_html_clean
+transformers
+openai
+python-dotenv
