@@ -1,4 +1,5 @@
-from llm import client
+from app.llm import client
+from app.models import ResponseFormat
 
 instructions = ("You are the manager of a company that develops software for wealth and asset managers."
                 "Your product is a connected platform that unifies data, systems and workflows."
@@ -13,85 +14,59 @@ instructions = ("You are the manager of a company that develops software for wea
                 "3) business opportunities: do potential customers work on inhouse solutions (negative impact) or are there new potential customers (positive impact)"
                 "Classify the content of the newspaper article as good news or bad news for the business."
                 "Provide a confidence score between 0 and 1 and give a short reasoning by stating which of the aspects is mainly affected (it is possible that more than 1"
-                "are affected at the same time) and state the direction of the effect."
-                "When you have your result for the classification, confidence score and reasoning, provide your answer according to the response format."
+                "are affected at the same time). The reasoning should not be longer than 100 characters."
                 )
-response_format={
-            "type": "json_schema",
-            "json_schema": {
-                "name": "news_classification",
-                "schema": {
-                    "type": "object",
-                    "properties": {
-                        "label": {
-                            "type": "string",
-                            "enum": ["good", "bad"]
-                        },
-                        "confidence_score": {
-                            "type": "number",
-                            "minimum": 0,
-                            "maximum": 1
-                        },
-                        "reasoning": {
-                            "type": "string"
-                        }
-                    },
-                    "required": ["label", "confidence_score", "reasoning"],
-                    "additionalProperties": False
-                }
-            }
-        }
 
-def classify(text: str, summary: str) -> str:
-    summary_lower = summary.lower()
+keywords = {"wealth management": 2,
+            "portfolio management": 2,
+            "spm":  1,
+            "fintech": 1,
+            "analytics": 1,
+            "platform": 1,
+            "software": 1,
+            "dora": 1,
+            "mifid": 1,
+            "fida": 1,
+            "basel ii": 0.5,
+            "esma": 0.5,
+            "compliance": 0.25,
+            "directive": 0.25,
+            "regulation": 0.25,
+            "oversight": 0.25,
+            "reporting": 0.25,
+            "authorities": 0.25,
+            "regulators": 0.25,
+            "eu commission": 0.5,
+            "central bank": 0.5}
 
-    keywords = {"wealth management": 2,
-                "portfolio management": 2,
-                "fintech": 1,
-                "analytics": 1,
-                "platform": 1,
-                "software": 1,
-                "dora": 1,
-                "mifid": 1,
-                "fida": 1,
-                "basel ii": 0.5,
-                "esma": 0.5,
-                "compliance": 0.25,
-                "directive": 0.25,
-                "regulation": 0.25,
-                "oversight": 0.25,
-                "reporting": 0.25,
-                "authorities": 0.25,
-                "regulators": 0.25,
-                "eu commission": 0.5,
-                "central bank": 0.5}
+def classify(text: str) -> str:
+    text_lower = text.lower()
 
     score = 0
     for key_word in keywords.keys():
-        score += summary_lower.count(key_word)*keywords[key_word]
+        score += text_lower.count(key_word)*keywords[key_word]
 
-    print(score)
-
-    if score > 5:
-        classification = client.responses.create(
+    if score > 50:
+        llm_call = client.responses.parse(
             model="gpt-5.4",
             input=text,
             instructions=instructions,
-            response_format=response_format
+            text_format=ResponseFormat
         )
-    elif score > 3:
-        classification = client.responses.create(
-            model="gpt-5.4-mini",
+        classification = llm_call.output_text
+    elif score >= 20:
+        llm_call = client.responses.parse(
+            model="gpt-5-mini",
             input=text,
             instructions=instructions,
-            response_format=response_format
+            text_format=ResponseFormat
         )
-
+        classification = llm_call.output_text
     else:
-        confidence_score = 1-(score / len(summary.split()))
+        confidence_score = 1-(score / 20)
         classification = {"label": "unrelated",
                           "confidence_score": confidence_score,
-                          "reasoning": "number of keywords in article summary too small"
+                          "reasoning": "number of keywords in article text too small"
             }
 
     return classification

@@ -9,3 +9,8 @@ class EvaluationResponse(BaseModel):
     label: str
     reasoning: str
     confidence: float
+
+class ResponseFormat(BaseModel):
+    label: str
+    confidence_score: float
+    reasoning: str
