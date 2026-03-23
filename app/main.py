@@ -9,7 +9,7 @@ app = FastAPI(title="News Evaluator API")
 def evaluate(url: str):
     try:
         art_info = extract_article(url)
-        label, reasoning = classify(art_info["text"])
+        label, reasoning = classify(art_info["text"], art_info["summary"])
 
         return EvaluationResponse(
             url=url,

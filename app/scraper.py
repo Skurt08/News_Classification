@@ -19,6 +19,7 @@ def extract_article(url: str) -> dict:
         "publisher": None,
         "title": None,
         "date": None,
+        "summary": None,
         "text": None,
         "paywalled": None,
         "error": None
@@ -34,6 +35,7 @@ def extract_article(url: str) -> dict:
         result["date"] = article.publish_date
 
         if article.text:
+            result["summary"] = article.summary
             result["text"] = article.text
             if len(article.text.split()) >= 200:
                 result["paywalled"] = "unlikely"
@@ -61,16 +63,7 @@ def extract_article(url: str) -> dict:
         result["error"] = "request_error"
 
     except Exception as e:
-        # Catch-all for unexpected issues
         logger.exception(f"Unexpected error for URL: {url}")
         result["error"] = "unknown_error"
 
     return result
-
-art = Article("https://worldbusinessoutlook.com/top-10-fintech-wealth-management-platforms-in-2026/?utm_source=chatgpt.com")
-art.download()
-art.parse()
-print(art.title)
-print(type(art.text))
-#print(urlparse(art.source_url).netloc)
-#print(art.url)

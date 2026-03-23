@@ -8,3 +8,4 @@ class EvaluationResponse(BaseModel):
     paywall: str
     label: str
     reasoning: str
+    confidence: float
