@@ -1,10 +1,10 @@
 # News Classification API
 
-A Python-based backend service that classifies news articles by their relevance to [Performativ](https://www.performativ.com/)'s wealth management business. Given an article URL, it scrapes the content, evaluates relevance through keyword scoring, and uses an LLM to determine sentiment.
+A Python-based backend service that classifies news articles by their relevance to the business of a wealth management software provider. Given an article URL, it scrapes the content, evaluates relevance through keyword scoring, and uses an LLM to determine sentiment.
 
 ## Architecture
 
-The service follows a classical pipeline approach:
+The service uses the following pipeline:
 
 ```
 URL  -->  Scraper  -->  Keyword Scoring  -->  LLM Classification  -->  JSON Response
@@ -50,7 +50,7 @@ For LLM-classified articles, the model is instructed to evaluate the article fro
 
 The LLM returns a structured `EvaluationResponse` via OpenAI's structured output (`responses.parse`).
 
-For `UNRELATED` articles, the confidence score is computed as `1 - (score / 20)` — meaning a score of 0 gives confidence 1.0 (very confident it's unrelated), while a score of 19 gives ~0.05.
+For `UNRELATED` articles, the confidence score is computed as `1 - (score / 20)` — essentially, it measures how close the article was to reach the threshold of 20 that is required to be treated as a related article.
 
 ### Step 4 — API Response (`main.py`)
 
@@ -139,10 +139,8 @@ cp .env_example .env
 
 Edit `.env`:
 ```
-OPEN_API_KEY=sk-your-key-here
+OPENAI_API_KEY=sk-your-key-here
 ```
-
-Note: the environment variable is `OPEN_API_KEY` (not `OPENAI_API_KEY`).
 
 ### Running locally
 
