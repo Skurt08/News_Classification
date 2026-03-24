@@ -8,7 +8,7 @@ from app.scraper import (
     EmptyArticleError,
 )
 from app.classifier import classify_article
-from app.models import EvaluationResponse
+from app.models import EvaluationResponse, UrlRequest
 import logging
 
 app = FastAPI(title="News Evaluator API")
@@ -19,8 +19,10 @@ latest_result = None
 
 
 @app.post("/classify", response_model=EvaluationResponse)
-def classify_endpoint(url: str):
+def classify_endpoint(request: UrlRequest):
     global latest_result
+
+    url = str(request.url)
 
     try:
         art_text = extract_article(url)
