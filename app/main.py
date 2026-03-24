@@ -62,3 +62,15 @@ def latest():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+@app.get("/")
+def root():
+    return {
+        "service": "News Classification API",
+        "docs": "/docs",
+        "endpoints": {
+            "POST /classify": "Classify a news article by URL",
+            "GET /latest": "Get the most recent classification",
+            "GET /health": "Health check"
+        }
+    }
