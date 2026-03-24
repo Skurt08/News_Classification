@@ -1,3 +1,5 @@
+from zoneinfo import ZoneInfo
+
 from app.llm import client
 from app.models import EvaluationResponse
 import datetime
@@ -56,7 +58,7 @@ def classify_article(text: str, url: str) -> EvaluationResponse:
             text_format=EvaluationResponse
         )
         classification = llm_call.output_parsed
-        classification.processed_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        classification.processed_at = datetime.datetime.now(ZoneInfo("Europe/Copenhagen")).strftime("%Y-%m-%d %H:%M:%S")
         classification.url = url
     elif score >= 20:
         llm_call = client.responses.parse(
@@ -66,7 +68,7 @@ def classify_article(text: str, url: str) -> EvaluationResponse:
             text_format=EvaluationResponse
         )
         classification = llm_call.output_parsed
-        classification.processed_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        classification.processed_at = datetime.datetime.now(ZoneInfo("Europe/Copenhagen")).strftime("%Y-%m-%d %H:%M:%S")
         classification.url = url
     else:
         confidence_score = round(1-(score / 20), 2)
@@ -76,7 +78,7 @@ def classify_article(text: str, url: str) -> EvaluationResponse:
             confidence_score=confidence_score,
             reasoning="Total number of keywords too small.",
             relevant_topics=[],
-            processed_at=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            processed_at=datetime.datetime.now(ZoneInfo("Europe/Copenhagen")).strftime("%Y-%m-%d %H:%M:%S")
         )
 
     return classification
