@@ -69,7 +69,7 @@ def classify_article(text: str, url: str) -> EvaluationResponse:
         classification.processed_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         classification.url = url
     else:
-        confidence_score = 1-(score / 20)
+        confidence_score = round(1-(score / 20))
         classification = EvaluationResponse(
             url=url,
             label="UNRELATED",
