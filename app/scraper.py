@@ -5,9 +5,7 @@ import logging
 import requests
 
 logging.basicConfig(
-    level=logging.ERROR,
-    filename='error.log',
-    filemode='a',
+    level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
@@ -65,9 +63,3 @@ def extract_article(url: str) -> dict[str, str | None]:
         result["error"] = "unknown_error"
 
     return result
-
-art = Article("https://www.slaughterandmay.com/insights/financial-regulation-weekly-bulletin/financial-regulation-weekly-bulletin-12-march-2026/?utm_source=chatgpt.com")
-art.download()
-art.parse()
-
-print(art.summary)
