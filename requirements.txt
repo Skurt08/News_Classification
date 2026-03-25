@@ -6,3 +6,4 @@ requests
 lxml_html_clean
 openai
 python-dotenv
+pytest
