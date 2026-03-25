@@ -211,3 +211,4 @@ Timestamps are returned in `Europe/Copenhagen` timezone.
 | `pydantic` | Request/response validation and structured output |
 | `python-dotenv` | Load `.env` variables |
 | `requests` | HTTP client (used by newspaper3k) |
+| `pytest` | testing |
