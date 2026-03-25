@@ -114,6 +114,15 @@ The `url` field is validated as a proper HTTP URL (`HttpUrl`).
 
 Returns the most recent classification result. Returns `404` with `"No classification yet"` if no article has been classified since the last restart.
 
+## Tests
+
+| File                 | Scope          | Description                                                         |
+| -------------------- | -------------- | ------------------------------------------------------------------- |
+| `test_api.py`        | API layer      | Tests FastAPI endpoints, request validation, and response structure |
+| `test_classifier.py` | Business logic | Verifies keyword scoring, threshold logic, and LLM routing behavior |
+| `test_scraper.py`    | Scraping layer | Tests article extraction and error handling for edge cases          |
+
+
 ## Setup
 
 ### Prerequisites
@@ -179,6 +188,11 @@ Timestamps are returned in `Europe/Copenhagen` timezone.
 │   ├── classifier.py    # Keyword scoring + LLM classification logic
 │   ├── models.py        # Pydantic models (UrlRequest, EvaluationResponse)
 │   └── llm.py           # OpenAI client initialization
+├── tests/
+│   ├── __init__.py
+│   ├── test_api.py
+│   ├── test_classifier.py
+│   └── test_scraper.py
 ├── .env_example         # Template for environment variables
 ├── .gitignore
 ├── requirements.txt
